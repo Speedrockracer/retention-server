@@ -4,6 +4,7 @@ namespace App;
 use DateTime;
 use function _\{reduce, groupBy, map};
 use App\User;
+use App\DataLoaderInterface;
 
 final class GraphDataProcessor {
 
@@ -30,13 +31,16 @@ final class GraphDataProcessor {
     ];
 
     private $initialRetention = [];
-    public function GraphDataProcessor() {
+    private $dataloader;
+
+    public function __construct(DataLoaderInterface $dataloader) {
+        $this->dataloader = $dataloader;
         $this->initialRetention = array_fill_keys(self::retentionNames, 0);
     }
 
-    public function buildRetentionGraphData(array $users): array {
+    public function buildRetentionGraphData(): array {
         return $this->createRetentionDataForWeeks(
-            $this->groupByWeek($users)
+            $this->groupByWeek($this->dataloader->loadUsers())
         );
     }
 

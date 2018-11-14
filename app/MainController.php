@@ -10,12 +10,11 @@ final class MainController {
     // Only one call so no routing necessary
     public function run(): void {
         $dataloader = new DataLoader();
-        $processor = new GraphDataProcessor();
+        $processor = new GraphDataProcessor($dataloader);
 
-        $users = $dataloader->loadUsers();
-        $graphData = $processor->buildRetentionGraphData($users);
-
-        $this->printJsonResponse($graphData);
+        $this->printJsonResponse(
+            $processor->buildRetentionGraphData()
+        );
     }
 
     private function printJsonResponse($data): void {

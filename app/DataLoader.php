@@ -5,7 +5,7 @@ namespace App;
 use SplFileObject;
 use App\User;
 
-final class DataLoader {
+final class DataLoader implements DataLoaderInterface {
 
     const FILE_LOCATION = __DIR__ . "/export.csv";
 

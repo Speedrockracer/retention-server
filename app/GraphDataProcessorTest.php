@@ -8,13 +8,17 @@ use PHPUnit\Framework\TestCase;
 use function _\groupBy;
 use App\GraphDataProcessor;
 use App\User;
+use App\DataLoaderInterface;
 
 final class GraphDataProcessorTest extends TestCase {
     private $processor;
+    private $dataloader;
 
     public function __construct() {
         parent::__construct();
-        $this->processor = new GraphDataProcessor();
+        // Dependecies
+        $this->dataloader = new TestDataLoader();
+        $this->processor = new GraphDataProcessor($this->dataloader);
     }
 
     public function testAddsUserToRetentionCorrectly(): void {
@@ -23,7 +27,7 @@ final class GraphDataProcessorTest extends TestCase {
         $lastRetention = array_fill_keys(GraphDataProcessor::retentionNames, 0);
 
         // create random users
-        $testUsers = $this->generateTestUsers();
+        $testUsers = $this->dataloader->loadUsers();
         foreach($testUsers as $testUser) {
 
             // Call the add method
@@ -50,7 +54,7 @@ final class GraphDataProcessorTest extends TestCase {
 
     public function testReducesUserArrayCorrectly(): void {
         // create 100 random users
-        $testUsers = $this->generateTestUsers();
+        $testUsers = $this->dataloader->loadUsers();
 
         // Execute
         $retention = $this->processor->reduceUsersToRetentionData($testUsers);
@@ -62,14 +66,10 @@ final class GraphDataProcessorTest extends TestCase {
     }
 
     public function testUserDataIsSplittedCorrectly(): void {
-        $weekCount = 5;
-        $userCount = 100;
-
-        // create 100 random users
-        $testUsers = $this->generateTestUsers($userCount, $weekCount);
-        
+        $weekCount = $this->dataloader->weeks;
+        $userCount = $this->dataloader->count;
         // Execute
-        $weeks = $this->processor->buildRetentionGraphData($testUsers);
+        $weeks = $this->processor->buildRetentionGraphData();
 
         // Check that all the weeks are extracted properly
         $this->assertEquals(count($weeks), $weekCount);
@@ -81,9 +81,23 @@ final class GraphDataProcessorTest extends TestCase {
             ]);
         }
     }
+}
+
+// Randomly generates users for testing.
+final class TestDataLoader implements DataLoaderInterface {
+    // Loading settings
+    public $count = 100;
+    public $weeks = 5;
+
+    public $users;
+
+    public function loadUsers(): array {
+        $this->users = $this->generateTestUsers($this->count, $this->weeks);
+        return $this->users;
+    }
 
     // Test helper functions
-    private function generateTestUsers(int $count = 100, int $weeks = 5): array {
+    public function generateTestUsers($count, $weeks): array {
         $result = [];
 
         // Spread over $weeks
@@ -91,7 +105,7 @@ final class GraphDataProcessorTest extends TestCase {
 
         // Ensure we only give valid data to the test.
         // We want to spread the users equally among the available weeks.
-        $this->assertEquals(0, $count % $weeks); 
+        if ($count % $weeks != 0) throw new Exception("Unable to fit users in given weeks.");
         
         $currentWeek = new DateTime();
         $weekInterval = new DateInterval('P1W');
