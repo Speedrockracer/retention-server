@@ -6,10 +6,10 @@ From the command line execute the following commands:
 ### Setup
 * git clone https://github.com/Speedrockracer/retention-server.git retention-server
 * cd retention-server
-* docker run --rm -v $(pwd):/app composer/composer install
+* docker run --rm -v $(pwd):/app prooph/composer:7.2 install
 
 ### Test
-* docker run --rm -v $(pwd):/app composer ./vendor/bin/phpunit --testdox --bootstrap vendor/autoload.php app
+* docker run --rm -v $(pwd):/app prooph/composer:7.2 ./vendor/bin/phpunit --testdox --bootstrap vendor/autoload.php app
 
 ### Run
 * docker-compose up

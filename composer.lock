@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8672bb5c67a45d58f5375b731331506",
+    "content-hash": "b970b1f4d6b30afd5c8a830421738b86",
     "packages": [
         {
             "name": "lodash-php/lodash-php",
@@ -1708,7 +1708,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.0.0"
+        "php": ">=7.1.0"
     },
     "platform-dev": []
 }

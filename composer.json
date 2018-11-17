@@ -3,7 +3,7 @@
     "description": "Assessment project",
     "type": "project",
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.0",
         "lodash-php/lodash-php": "^0.0.4"
     },
     "require-dev": {
